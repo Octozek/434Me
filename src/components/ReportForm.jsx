@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles.css"; // Import custom styles
+import { API_URL } from "../config"; // Import API URL
 
 const ReportForm = () => {
     const [formData, setFormData] = useState({
@@ -44,7 +45,7 @@ const ReportForm = () => {
         setError(null);
 
         try {
-            const response = await fetch("http://localhost:5000/generate-report", {
+            const response = await fetch(`${API_URL}/generate-report`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
