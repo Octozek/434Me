@@ -70,18 +70,15 @@ app.post("/generate-report", async (req, res) => {
                         2. **The next section must describe what the officer observed in a neutral and factual manner.**
                            - "While conducting my assigned duties, I observed (incident) involving (full inmate name & ID)."
 
-                        3. **If emergency assistance is called, the report must include:**
-                           - "I called for my Sgt and a Code 3 was initiated in (location)."
-
-                        4. **If an inmate was injured or required medical attention:**
+                        3. **If an inmate was injured or required medical attention:**
                            - "The individual was then taken to the Healthcare unit where they were evaluated by proper healthcare staff and mental health staff."
 
-                        5. **All reports must end with:**
+                        4. **All reports must end with:**
                            - "Proper chain of command was notified, and (full name of inmate(s) with ID) was identified by state-issued ID and Offender 360."
 
-                        6. **Ensure proper grammar, spelling, and punctuation throughout the report.**
+                        5. **Ensure proper grammar, spelling, and punctuation throughout the report.**
 
-                        7. **Do not include personal opinions or assumptions—only factual observations and actions taken.**
+                        6. **Do not include personal opinions or assumptions—only factual observations and actions taken.**
                     `,
                 },
                 { role: "user", content: `Generate a professional 434 incident report based on these details:\n\n${basePrompt}` },
