@@ -2,7 +2,7 @@
 
 /* General Page Layout */
 body {
-    background-color: #f8f9fa; /* Light gray background */
+    background-color: #FDF1DD; /* Light beige background */
     font-family: "Arial", sans-serif;
     display: flex;
     justify-content: center;
@@ -22,7 +22,8 @@ body {
 /* Card Styling */
 .card {
     border-radius: 10px;
-    border: none;
+    border: 1px solid #DDD7C5;
+    background-color: #FBF1DC;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
 }
@@ -32,11 +33,13 @@ h2, h3 {
     font-weight: bold;
     text-align: center;
     margin-bottom: 20px;
+    color: #373B41;
 }
 
 /* Form Labels */
 .form-label {
     font-weight: 600;
+    color: #373B41;
 }
 
 /* Input Fields */
@@ -44,6 +47,9 @@ h2, h3 {
     border-radius: 8px;
     padding: 10px;
     font-size: 16px;
+    border: 1px solid #DDD7C5;
+    background-color: #FDF1DD;
+    color: #373B41;
 }
 
 /* Select Fields */
@@ -51,6 +57,9 @@ h2, h3 {
     border-radius: 8px;
     padding: 10px;
     font-size: 16px;
+    border: 1px solid #DDD7C5;
+    background-color: #FDF1DD;
+    color: #373B41;
 }
 
 /* Button Styling */
@@ -59,21 +68,27 @@ h2, h3 {
     padding: 10px 15px;
     border-radius: 6px;
     font-weight: bold;
+    color: white;
 }
 
 .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #33595E;
+    border-color: #33595E;
 }
 
 .btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
+    background-color: #373B41;
+    border-color: #373B41;
 }
 
 .btn-success {
     background-color: #28a745;
     border-color: #28a745;
+}
+
+.btn-info {
+    background-color: #33595E;
+    border-color: #33595E;
 }
 
 /* Center Buttons */
@@ -83,24 +98,106 @@ h2, h3 {
 
 /* Report Display */
 .report-container {
-    background-color: white;
+    background-color: #FBF1DC;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     margin-top: 20px;
-    text-align: left; /* Keeps text readable */
+    text-align: left;
+    border: 1px solid #DDD7C5;
 }
 
 /* Report Text Formatting */
 .report-text {
     white-space: pre-wrap;
+    word-wrap: break-word; /* Force text to wrap within the container */
+    overflow-wrap: break-word; /* Ensures long words don't cause overflow */
     font-family: "Courier New", monospace;
     font-size: 14px;
     padding: 15px;
-    background-color: #f1f1f1;
+    background-color: #FDF1DD;
     border-radius: 8px;
-    border-left: 4px solid #007bff;
+    border-left: 4px solid #33595E;
+    color: #373B41;
+    width: 100%;
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
+
+/* Ensure modal takes up full screen and centers content */
+.modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+/* Ensure modal content does not stretch horizontally */
+.modal-dialog {
+    max-width: 85%;
+    width: 100%;
+    background-color: #FBF1DC;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevents any unexpected horizontal overflow */
+}
+
+/* Keep modal content readable and prevent horizontal scrolling */
+.modal-content {
+    border-radius: 10px;
+    border: 1px solid #DDD7C5;
+    background-color: #FBF1DC;
+    width: 100%;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Modal Header */
+.modal-header {
+    background-color: #33595E;
+    color: white;
+    border-bottom: 1px solid #DDD7C5;
+    padding: 15px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+/* Modal Title */
+.modal-title {
+    margin: 0;
+    font-size: 20px;
+}
+
+/* Modal Body Adjustments - Fix Horizontal Scroll Issue */
+.modal-body {
+    padding: 20px;
+    text-align: left;
+    color: #373B41;
+    max-height: 75vh; /* Expand vertically but not infinitely */
+    overflow-y: auto; /* Vertical scroll for long reports */
+    word-wrap: break-word; /* Ensure long words wrap properly */
+    overflow-wrap: break-word; /* Force words to break if necessary */
+    white-space: pre-wrap; /* Keeps text formatting while ensuring it wraps properly */
+    width: 100%;
+}
+
+/* Modal Footer */
+.modal-footer {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    background-color: #FDF1DD;
+    border-top: 1px solid #DDD7C5;
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -111,5 +208,9 @@ h2, h3 {
     .card {
         width: 100%;
         padding: 15px;
+    }
+
+    .modal-dialog {
+        max-width: 95%;
     }
 }

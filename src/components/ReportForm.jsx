@@ -1,7 +1,8 @@
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./styles.css"; // Import custom styles
-import { API_URL } from "../config"; // Import API URL
+import "./styles.css"; // Custom styles
+import { API_URL } from "../config"; 
+import Ticket from "./Ticket"; 
 
 const ReportForm = () => {
     const [formData, setFormData] = useState({
@@ -17,8 +18,15 @@ const ReportForm = () => {
     });
 
     const [report, setReport] = useState(null);
+    const [ticket, setTicket] = useState(null); 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+
+    const [isEditingReport, setIsEditingReport] = useState(false);
+    const [isEditingTicket, setIsEditingTicket] = useState(false);
+    const [editedReport, setEditedReport] = useState("");
+    const [editedTicket, setEditedTicket] = useState("");
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -56,7 +64,9 @@ const ReportForm = () => {
             const data = await response.json();
 
             if (data.report) {
-                setReport(data.report); // ✅ Correctly setting the report
+                setReport(data.report);
+                setEditedReport(data.report); 
+                setShowModal(true);
             } else {
                 throw new Error("Invalid response from server");
             }
@@ -81,11 +91,38 @@ const ReportForm = () => {
             inmates: [{ name: "", id: "" }],
         });
         setReport(null);
+        setTicket(null);
         setError(null);
+        setShowModal(false);
+        setIsEditingReport(false);
+        setIsEditingTicket(false);
     };
 
     const handlePrint = () => {
         window.print();
+    };
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(report);
+        alert("Report copied to clipboard!");
+    };
+
+    const handleEditReport = () => {
+        setIsEditingReport(true);
+    };
+
+    const handleSaveReport = () => {
+        setIsEditingReport(false);
+        setReport(editedReport);
+    };
+
+    const handleEditTicket = () => {
+        setIsEditingTicket(true);
+    };
+
+    const handleSaveTicket = () => {
+        setIsEditingTicket(false);
+        setTicket(editedTicket);
     };
 
     return (
@@ -155,7 +192,7 @@ const ReportForm = () => {
                     </div>
 
                     <div className="mb-3">
-                        <label className="form-label">Incident Details</label>
+                        <label className="form-label">Incident Summary</label>
                         <textarea name="incidentDetails" className="form-control" rows="4" value={formData.incidentDetails} onChange={handleChange} required></textarea>
                     </div>
 
@@ -188,17 +225,85 @@ const ReportForm = () => {
                         <button type="submit" className="btn btn-primary me-2" disabled={loading}>
                             {loading ? "Generating Report..." : "Generate Report"}
                         </button>
-                        <button type="button" className="btn btn-secondary" onClick={handleReset}>
-                            Try Again
-                        </button>
                     </div>
                 </form>
             </div>
 
-            {report && (
-                <div className="card mt-4 p-4 shadow-lg">
-                    <h3 className="text-center">📜 AI-Generated 434 Report</h3>
-                    <pre className="border p-3 bg-light">{report}</pre>
+            {/* MODAL for Generated 434 Report & Ticket */}
+            {report && showModal && (
+                <div className="modal d-block" tabIndex="-1">
+                    <div className="modal-dialog modal-lg">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">📜 AI-Generated 434 Report</h5>
+                                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                            </div>
+                            <div className="modal-body">
+                                
+                                {/* Report Section with Edit Mode */}
+                                <div className="mb-3">
+                                    <h5>
+                                        434 Report 
+                                        <button className="btn btn-sm btn-outline-secondary ms-2" onClick={handleEditReport}>
+                                            ✏️
+                                        </button>
+                                    </h5>
+                                    {isEditingReport ? (
+                                        <>
+                                            <textarea
+                                                className="form-control"
+                                                rows="6"
+                                                value={editedReport}
+                                                onChange={(e) => setEditedReport(e.target.value)}
+                                            />
+                                            <button className="btn btn-success mt-2" onClick={handleSaveReport}>
+                                                ✅ Done
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <pre className="border p-3 bg-light">{report}</pre>
+                                    )}
+                                </div>
+
+                                {/* Ticket Section with Edit Mode */}
+                                {ticket && (
+                                    <div className="mt-4">
+                                        <h5>
+                                            Disciplinary Ticket 
+                                            <button className="btn btn-sm btn-outline-secondary ms-2" onClick={handleEditTicket}>
+                                                ✏️
+                                            </button>
+                                        </h5>
+                                        {isEditingTicket ? (
+                                            <>
+                                                <textarea
+                                                    className="form-control"
+                                                    rows="6"
+                                                    value={editedTicket}
+                                                    onChange={(e) => setEditedTicket(e.target.value)}
+                                                />
+                                                <button className="btn btn-success mt-2" onClick={handleSaveTicket}>
+                                                    ✅ Done
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <pre className="border p-3 bg-light">{ticket}</pre>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Generate Ticket Button */}
+                                {!ticket && (
+                                    <Ticket reportData={formData} setTicket={setTicket} setEditedTicket={setEditedTicket} />
+                                )}
+                            </div>
+                            <div className="modal-footer">
+                                <button className="btn btn-success" onClick={handlePrint}>Print</button>
+                                <button className="btn btn-secondary" onClick={handleReset}>Try Again</button>
+                                <button className="btn btn-info" onClick={handleCopy}>Copy</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
