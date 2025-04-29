@@ -57,6 +57,6 @@ const Ticket = ({ reportData, setTicket, setEditedTicket }) => {
             {error && <p className="text-danger mt-2">{error}</p>}
         </div>
     );
-};
+}; 
 
 export default Ticket;
