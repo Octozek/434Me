@@ -362,7 +362,7 @@ const offenseCodes = {
     "Failure to Submit to Medical or Forensic Tests": "311 - Failure to Submit to Medical or Forensic Tests"
 };
 
-// ✅ **TICKET GENERATION ENDPOINT**
+// ✅ TICKET GENERATION ENDPOINT
 app.post("/generate-ticket", async (req, res) => {
     try {
         console.log("🔹 Received request for /generate-ticket");
@@ -378,10 +378,10 @@ app.post("/generate-ticket", async (req, res) => {
         console.log("✅ Generating Ticket...");
 
         let ticketPrompt = `
-            On ${formatDateForPDF()}, I C/O ${officerName}, Badge #${badgeNumber}, was assigned to ${assignedArea}.
-            At approximately ${formatTimeForPDF(incidentTime)}, while conducting my assigned duties, I observed the following violation:
-            
-            Incident Summary: ${incidentDetails}
+On ${formatDateForPDF()}, I C/O ${officerName}, Badge #${badgeNumber}, was assigned to ${assignedArea}.
+At approximately ${formatTimeForPDF(incidentTime)}, while conducting my assigned duties, I observed the following violation:
+
+Incident Summary: ${incidentDetails}
         `;
 
         let inmateNamesList = [];
@@ -392,7 +392,6 @@ app.post("/generate-ticket", async (req, res) => {
             inmateNamesList.push(`${inmate.name} (ID: ${inmate.id})`);
         });
 
-        // ✅ **AI-assisted offense detection using the predefined codes**
         ticketPrompt += `\n\nThe following offenses were identified based on the described incident:`;
 
         const response = await openai.chat.completions.create({
@@ -401,13 +400,13 @@ app.post("/generate-ticket", async (req, res) => {
                 {
                     role: "system",
                     content: `
-                        You are an expert at writing professional correctional officer disciplinary tickets.
-                        Your task is to:
-                        - Identify the correct offense codes **ONLY** from the provided list.
-                        - If an offense applies, assign it to the inmate.
-                        - If multiple offenses apply, list them all.
-                        - Ensure the ticket remains factual and aligned with standard correctional facility reporting.
-                        - Do NOT create new offenses. Use only those from the provided list.
+You are an expert at writing professional correctional officer disciplinary tickets.
+Your task is to:
+- Identify the correct offense codes **ONLY** from the provided list.
+- If an offense applies, assign it to the inmate.
+- If multiple offenses apply, list them all.
+- Ensure the ticket remains factual and aligned with standard correctional facility reporting.
+- Do NOT create new offenses. Use only those from the provided list.
                     `
                 },
                 { 
@@ -427,15 +426,17 @@ app.post("/generate-ticket", async (req, res) => {
             offensesList.push(offense);
         });
 
-        // Add offenses to the ticket
+        // ✅ Add offenses to the ticket
         if (offensesList.length > 0) {
             ticketPrompt += `\n\nOffense Codes:\n${offensesList.join("\n")}`;
         }
 
+        // ✅ Add healthcare / mental health / restrictive housing if needed
         if (healthcare === "yes") ticketPrompt += "\nThe individual was taken to the Healthcare unit for evaluation.";
         if (mentalHealth === "yes") ticketPrompt += "\nThe individual was evaluated by mental health staff.";
         if (restrictiveHousing === "yes") ticketPrompt += "\nThe individual was taken to N2 restrictive housing.";
 
+        // ✅ Final closing sentence
         ticketPrompt += `\n\nProper chain of command was notified, and ${inmateNamesList.join(", ")} was identified by state-issued ID and Offender 360.`;
 
         console.log("✅ Successfully generated Ticket.");
