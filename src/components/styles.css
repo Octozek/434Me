@@ -2,7 +2,7 @@
 
 /* General Page Layout */
 body {
-    background-color: #FDF1DD; /* Light beige background */
+    background-color: #272727; /* Light beige background */
     font-family: "Arial", sans-serif;
     display: flex;
     justify-content: center;
@@ -22,9 +22,9 @@ body {
 /* Card Styling */
 .card {
     border-radius: 10px;
-    border: 1px solid #DDD7C5;
-    background-color: #FBF1DC;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #00000000;
+    background-color: #131313;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.411);
     padding: 20px;
 }
 
@@ -33,13 +33,13 @@ h2, h3 {
     font-weight: bold;
     text-align: center;
     margin-bottom: 20px;
-    color: #373B41;
+    color: #8b8b8b;
 }
 
 /* Form Labels */
 .form-label {
     font-weight: 600;
-    color: #373B41;
+    color: #8b8b8b;
 }
 
 /* Input Fields */
@@ -47,8 +47,8 @@ h2, h3 {
     border-radius: 8px;
     padding: 10px;
     font-size: 16px;
-    border: 1px solid #DDD7C5;
-    background-color: #FDF1DD;
+    border: 1px solid #039ae000;
+    background-color: #8b8b8b;
     color: #373B41;
 }
 
@@ -57,8 +57,8 @@ h2, h3 {
     border-radius: 8px;
     padding: 10px;
     font-size: 16px;
-    border: 1px solid #DDD7C5;
-    background-color: #FDF1DD;
+    border: 1px solid #ddd7c500;
+    background-color: #8b8b8b;
     color: #373B41;
 }
 
@@ -68,12 +68,12 @@ h2, h3 {
     padding: 10px 15px;
     border-radius: 6px;
     font-weight: bold;
-    color: white;
+    color: #8b8b8b(133, 91, 91);
 }
 
 .btn-primary {
     background-color: #33595E;
-    border-color: #33595E;
+    border-color: #33595e00;
 }
 
 .btn-secondary {
@@ -82,8 +82,8 @@ h2, h3 {
 }
 
 .btn-success {
-    background-color: #28a745;
-    border-color: #28a745;
+    background-color: #479654;
+    border-color: #28a74600;
 }
 
 .btn-info {
@@ -104,7 +104,7 @@ h2, h3 {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     margin-top: 20px;
     text-align: left;
-    border: 1px solid #DDD7C5;
+    border: 1px solid #242424;
 }
 
 /* Report Text Formatting */

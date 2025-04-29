@@ -44,12 +44,12 @@ const ReportForm = () => {
         e.preventDefault();
         setLoading(true);
         setError(null);
-        setPdfUrl(null); // Reset previous PDF
-
+        setPdfUrl(null);
+    
         try {
             console.log("🔹 Sending request to:", `${API_URL}/generate-report`);
             console.log("🔹 Request Payload:", JSON.stringify(formData, null, 2));
-
+    
             const response = await fetch(`${API_URL}/generate-report`, {
                 method: "POST",
                 headers: {
@@ -57,18 +57,16 @@ const ReportForm = () => {
                 },
                 body: JSON.stringify(formData),
             });
-
-            console.log("🔹 Raw Response:", response);
-
+    
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-
-            // ✅ Handle PDF response
-            const blob = await response.blob();
-            const pdfUrl = window.URL.createObjectURL(blob);
-            setPdfUrl(pdfUrl); // Set PDF preview
-
+    
+            // ✅ HANDLE AS BLOB (not JSON)
+            const pdfBlob = await response.blob();
+            const pdfUrl = window.URL.createObjectURL(pdfBlob);
+            setPdfUrl(pdfUrl);
+    
             console.log("✅ Successfully generated PDF.");
         } catch (error) {
             console.error("❌ Error generating report:", error);
