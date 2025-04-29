@@ -17,16 +17,9 @@ const ReportForm = () => {
         inmates: [{ name: "", id: "" }],
     });
 
-    const [report, setReport] = useState(null);
-    const [ticket, setTicket] = useState(null); 
+    const [pdfUrl, setPdfUrl] = useState(null); // Store PDF URL for preview
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-
-    const [isEditingReport, setIsEditingReport] = useState(false);
-    const [isEditingTicket, setIsEditingTicket] = useState(false);
-    const [editedReport, setEditedReport] = useState("");
-    const [editedTicket, setEditedTicket] = useState("");
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -51,8 +44,12 @@ const ReportForm = () => {
         e.preventDefault();
         setLoading(true);
         setError(null);
+        setPdfUrl(null); // Reset previous PDF
 
         try {
+            console.log("🔹 Sending request to:", `${API_URL}/generate-report`);
+            console.log("🔹 Request Payload:", JSON.stringify(formData, null, 2));
+
             const response = await fetch(`${API_URL}/generate-report`, {
                 method: "POST",
                 headers: {
@@ -61,20 +58,34 @@ const ReportForm = () => {
                 body: JSON.stringify(formData),
             });
 
-            const data = await response.json();
+            console.log("🔹 Raw Response:", response);
 
-            if (data.report) {
-                setReport(data.report);
-                setEditedReport(data.report); 
-                setShowModal(true);
-            } else {
-                throw new Error("Invalid response from server");
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
+
+            // ✅ Handle PDF response
+            const blob = await response.blob();
+            const pdfUrl = window.URL.createObjectURL(blob);
+            setPdfUrl(pdfUrl); // Set PDF preview
+
+            console.log("✅ Successfully generated PDF.");
         } catch (error) {
-            console.error("Error generating report:", error);
+            console.error("❌ Error generating report:", error);
             setError("Failed to generate report. Please check the backend.");
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDownload = () => {
+        if (pdfUrl) {
+            const a = document.createElement("a");
+            a.href = pdfUrl;
+            a.download = "434_Incident_Report.pdf";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
     };
 
@@ -90,12 +101,8 @@ const ReportForm = () => {
             restrictiveHousing: "no",
             inmates: [{ name: "", id: "" }],
         });
-        setReport(null);
-        setTicket(null);
+        setPdfUrl(null);
         setError(null);
-        setShowModal(false);
-        setIsEditingReport(false);
-        setIsEditingTicket(false);
     };
 
     const handlePrint = () => {
@@ -229,80 +236,20 @@ const ReportForm = () => {
                 </form>
             </div>
 
-            {/* MODAL for Generated 434 Report & Ticket */}
-            {report && showModal && (
-                <div className="modal d-block" tabIndex="-1">
-                    <div className="modal-dialog modal-lg">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">📜 AI-Generated 434 Report</h5>
-                                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
-                            </div>
-                            <div className="modal-body">
-                                
-                                {/* Report Section with Edit Mode */}
-                                <div className="mb-3">
-                                    <h5>
-                                        434 Report 
-                                        <button className="btn btn-sm btn-outline-secondary ms-2" onClick={handleEditReport}>
-                                            ✏️
-                                        </button>
-                                    </h5>
-                                    {isEditingReport ? (
-                                        <>
-                                            <textarea
-                                                className="form-control"
-                                                rows="6"
-                                                value={editedReport}
-                                                onChange={(e) => setEditedReport(e.target.value)}
-                                            />
-                                            <button className="btn btn-success mt-2" onClick={handleSaveReport}>
-                                                ✅ Done
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <pre className="border p-3 bg-light">{report}</pre>
-                                    )}
-                                </div>
+            {/* PDF Preview */}
+            {pdfUrl && (
+                <div className="mt-4 text-center">
+                    <h4>📜 Generated Report Preview</h4>
+                    <iframe
+                        src={pdfUrl}
+                        width="100%"
+                        height="500px"
+                        style={{ border: "1px solid #ddd", borderRadius: "8px" }}
+                    ></iframe>
 
-                                {/* Ticket Section with Edit Mode */}
-                                {ticket && (
-                                    <div className="mt-4">
-                                        <h5>
-                                            Disciplinary Ticket 
-                                            <button className="btn btn-sm btn-outline-secondary ms-2" onClick={handleEditTicket}>
-                                                ✏️
-                                            </button>
-                                        </h5>
-                                        {isEditingTicket ? (
-                                            <>
-                                                <textarea
-                                                    className="form-control"
-                                                    rows="6"
-                                                    value={editedTicket}
-                                                    onChange={(e) => setEditedTicket(e.target.value)}
-                                                />
-                                                <button className="btn btn-success mt-2" onClick={handleSaveTicket}>
-                                                    ✅ Done
-                                                </button>
-                                            </>
-                                        ) : (
-                                            <pre className="border p-3 bg-light">{ticket}</pre>
-                                        )}
-                                    </div>
-                                )}
-
-                                {/* Generate Ticket Button */}
-                                {!ticket && (
-                                    <Ticket reportData={formData} setTicket={setTicket} setEditedTicket={setEditedTicket} />
-                                )}
-                            </div>
-                            <div className="modal-footer">
-                                <button className="btn btn-success" onClick={handlePrint}>Print</button>
-                                <button className="btn btn-secondary" onClick={handleReset}>Try Again</button>
-                                <button className="btn btn-info" onClick={handleCopy}>Copy</button>
-                            </div>
-                        </div>
+                    {/* Download Button */}
+                    <div className="mt-3">
+                        <button className="btn btn-success" onClick={handleDownload}>Download PDF</button>
                     </div>
                 </div>
             )}
